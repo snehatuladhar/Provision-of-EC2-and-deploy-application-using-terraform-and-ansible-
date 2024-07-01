@@ -4,34 +4,23 @@
   become: true
   gather_facts: false
 
-
   tasks:
-  - name: Install net-tools
+  - name: Install required packages
     yum:
-      name: net-tools
+      name: "{{ item }}"
       state: present
-
-  - name: Install Git
-    yum:
-      name: git
-      state: present
+      update_cache: yes
+    loop:
+      - net-tools
+      - git
+      - nodejs
+      - npm
 
   - name: Clone Git Repo
     git:
       repo: "https://github.com/sandeshlama7/sample_todo.git"
       dest: /home/ec2-user/sample_todo
 
-  - name: Install NodeJs
-    yum:
-      name: nodejs
-      state: present
-      update_cache: yes
-
-  - name: Install NPM
-    yum:
-      name: npm
-      state: present
-      update_cache: yes
 
   - name: Install pm2 globally
     npm:
