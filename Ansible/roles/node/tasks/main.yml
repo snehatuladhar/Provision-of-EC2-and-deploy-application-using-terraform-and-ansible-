@@ -1,0 +1,58 @@
+---
+- name: NodeJS Application Using Ansible
+  hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Install required packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - net-tools
+        - git
+        - nodejs
+        - npm
+      update_cache: yes
+
+    - name: Clone Git Repo
+      git:
+        repo: "https://github.com/sandeshlama7/sample_todo.git"
+        dest: /home/ec2-user/sample_todo
+
+    - name: Install pm2 globally
+      npm:
+        name: pm2
+        global: yes
+        state: present
+
+    - name: Install Node App Dependencies
+      command: npm install
+      args:
+        chdir: /home/ec2-user/sample_todo
+
+    - name: Install Mongodb Repo
+      copy:
+        dest: /etc/yum.repos.d/mongodb-org-7.0.repo
+        content: |
+          [mongodb-org-7.0]
+          name=MongoDB Repository
+          baseurl=https://repo.mongodb.org/yum/amazon/2023/mongodb-org/7.0/x86_64/
+          gpgcheck=1
+          enabled=1
+          gpgkey=https://pgp.mongodb.com/server-7.0.asc
+
+    - name: Install mongodb-org
+      dnf:
+        name: mongodb-org
+        state: present
+      notify:
+        - Restart web services
+
+    - name: Run the node app
+      command: pm2 start server.js
+      args:
+        chdir: /home/ec2-user/sample_todo
+
+

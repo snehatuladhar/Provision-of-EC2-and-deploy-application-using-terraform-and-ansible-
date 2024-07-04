@@ -1,0 +1,7 @@
+plugin: amazon.aws.aws_ec2
+region: "us-east-1"
+filters:
+  instance-state-name: running
+  "tag:owner": sneha.tuladhar@adex.ltd
+hostnames:
+  - instance-id

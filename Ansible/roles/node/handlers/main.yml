@@ -1,0 +1,5 @@
+---
+- name: Restart web services
+  service:
+    name: mongod
+    state: restarted
