@@ -1,0 +1,9 @@
+---
+- name: NodeJS Application Using Ansible
+  hosts: all
+  become: true
+  gather_facts: false
+  roles:
+    - nodes
+
+  
